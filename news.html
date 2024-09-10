@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGI News</title>
+</head>
+<body>
+    <h1>Latest AGI News</h1>
+    <ul id="news"></ul>
+    <a href="index.html">Back to Glossary</a>
+
+    <script>
+        const apiKey = 'your_newsapi_key';  // Replace with your NewsAPI key
+        fetch(`https://newsapi.org/v2/everything?q=AGI&apiKey=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                let articles = data.articles;
+                let newsContainer = document.getElementById('news');
+                articles.forEach(article => {
+                    let newsItem = `<li><a href="${article.url}" target="_blank">${article.title}</a><p>${article.description}</p></li>`;
+                    newsContainer.innerHTML += newsItem;
+                });
+            });
+    </script>
+</body>
+</html>
