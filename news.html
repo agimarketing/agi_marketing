@@ -11,31 +11,37 @@
     <a href="index.html">Back to Glossary</a>
 
     <script>
-        const apiKey = '6ca63da4-31be-4851-a903-858d4b4826d1';  // Replace with your NewsAPI key
+        const apiKey = '6ca63da4-31be-4851-a903-858d4b4826d1';  // Your Event Registry API key
+        const url = `https://eventregistry.org/api/v1/article/getArticles?apiKey=${apiKey}&keyword=AGI&lang=eng&resultType=articles`;
 
-        // Fetch news articles
-        fetch(`https://newsapi.org/v2/everything?q=AGI&apiKey=${apiKey}`)
-            .then(response => response.json())
+        // Fetch news articles from Event Registry API
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            })
             .then(data => {
-                console.log("News API response:", data);  // Log the API response for debugging
-                let articles = data.articles;
+                // Adjust based on Event Registry API's article structure
+                let articles = data.articles.results || [];  // Check where articles are stored in the API response
                 let newsContainer = document.getElementById('news');
 
-                if (articles && articles.length > 0) {
+                if (articles.length > 0) {
                     articles.forEach(article => {
-                        let newsItem = `<li><a href="${article.url}" target="_blank">${article.title}</a><p>${article.description}</p></li>`;
+                        let newsItem = `<li><a href="${article.url}" target="_blank">${article.title}</a><p>${article.body || article.summary}</p></li>`;
                         newsContainer.innerHTML += newsItem;
                     });
                 } else {
-                    newsContainer.innerHTML = '<li>No articles found.</li>';
+                    newsContainer.innerHTML = '<li>No news available at the moment.</li>';
                 }
             })
             .catch(error => {
-                console.error("Error fetching news:", error);  // Log any errors to the console
+                console.error("Error fetching news:", error);
                 let newsContainer = document.getElementById('news');
-                newsContainer.innerHTML = '<li>Unable to load news at this time.</li>';
+                newsContainer.innerHTML = `<li>Unable to load news at this time. ${error.message}</li>`;
             });
     </script>
 </body>
 </html>
-
